@@ -175,11 +175,16 @@ rollout passesController "Izipizy" (
   on pick_matte_objects pressed do current_state.pickMatteObjects();
   on liste_matte_objects doubleclicked item do current_state.deleteMatteObject item;
 
+  --Object ID
+  groupBox objectID_group "Set Object ID" pos:[890,300] width:130 height:50;
+  spinner objectID "" range:[0,100,1] type:#integer align:#left width:80 pos:[915,320];
+  on objectID changed new_id do ( for obj in selection do obj.gbufferChannel = new_id; )
+
   --Render
-  groupBox final_group "Render Option" pos:[890,300] width:130 height:190;
-  button set_camera "Choose camera" width:100 height:30 pos:[905,330];
-  button set_path "Choose directory" width:100 height:30 pos:[905,390];
-  button render_all "Render passes" width:100 height:30 pos:[905,450];
+  groupBox final_group "Render Option" pos:[890,360] width:130 height:130;
+  button set_camera "Choose camera" width:100 height:25 pos:[905,380];
+  button set_path "Choose directory" width:100 height:25 pos:[905,415];
+  button render_all "Render passes" width:100 height:25 pos:[905,450];
   on set_camera pressed do general_ctrl.pickCamera();
   on set_path pressed do general_ctrl.getSaveDir();
   on render_all pressed do general_ctrl.saveAllPasses();

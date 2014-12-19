@@ -119,12 +119,13 @@ fn saveAllPasses = (
     masterState.CurrentState = #(current_state.state);
 
     current_state.state.BeginRecording();
+    vr.output_saveFile =  false;
     vr.output_saveRawFile =  true;
     vr.output_rawFileName = save_dir + "\\" + current_state.name + "\\" + "render.exr";
     current_state.state.EndRecording();
 
     selectPasse states[i].name;
-    states[i].state.Render #(states[i].state) camera:save_camera #noPrompt;
+    states[i].state.Render #(states[i].state) camera:save_camera quiet:true missingExtFilesAction:#logmsg unsupportedRenderEffectAction:#logmsg;
     )
   );
 );

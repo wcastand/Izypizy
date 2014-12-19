@@ -284,6 +284,7 @@ fn createRenderElement = (
   for n in render_element do (
     i = findItem render_element n
     render_element[i] = (n elementname:(n as string));
+    if n == VRayObjectID then render_element[i].output_type = 1;
     );
   ),
 fn updateRenderElement = (
