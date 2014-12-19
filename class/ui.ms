@@ -157,9 +157,12 @@ rollout passesController "Izipizy" (
 
   --Light Select Passe
   groupBox light_select_group "Light Select" pos:[350,300] width:160 height:190;
-  button add_light_select "Add Light Select" width:140 height:20 pos:[360,320] enabled: false;
+  button add_light_select "+" width:60 height:20 pos:[360,320] enabled: false;
+  button delete_light_select "-" width:60 height:20 pos:[440,320] enabled: false;
   listbox liste_light_select height:9 width:140 pos:[360,350] enabled: false;
   on add_light_select pressed do current_state.addLightSelectPasse();
+  on delete_light_select pressed do current_state.deleteLightSelectPasse();
+  on liste_light_select doubleclicked item do current_state.renameLightElement item;
 
   --Mask RGB Passe
   groupBox mask_group "RGB Mask" pos:[520,300] width:160 height:190;
@@ -246,40 +249,40 @@ rollout passesController "Izipizy" (
   );
 
 fn manageUi new_val = (
-  passesController.reset.enabled = new_val;
-  passesController.suppress.enabled = new_val;
+  passesController.reset.enabled       = new_val;
+  passesController.suppress.enabled    = new_val;
   passesController.listePasses.enabled = new_val;
 
   passesController.GI.enabled = new_val;
   if passesController.GI.checked
   then (
-    passesController.primary_engine.enabled = new_val;
+    passesController.primary_engine.enabled        = new_val;
     passesController.primary_engine_preset.enabled = new_val;
-    passesController.secondary_engine.enabled = new_val;
+    passesController.secondary_engine.enabled      = new_val;
     )
   else(
-    passesController.primary_engine.enabled = false;
+    passesController.primary_engine.enabled        = false;
     passesController.primary_engine_preset.enabled = false;
-    passesController.secondary_engine.enabled = false;
+    passesController.secondary_engine.enabled      = false;
     )
 
   passesController.AO.enabled = new_val;
   if passesController.AO.checked
   then (
-    passesController.ao_occluded_color.enabled = new_val;
-    passesController.ao_occluded_color_label.enabled = new_val;
-    passesController.ao_unoccluded_color.enabled = new_val;
+    passesController.ao_occluded_color.enabled         = new_val;
+    passesController.ao_occluded_color_label.enabled   = new_val;
+    passesController.ao_unoccluded_color.enabled       = new_val;
     passesController.ao_unoccluded_color_label.enabled = new_val;
-    passesController.ao_radius.enabled = new_val;
-    passesController.ao_falloff.enabled = new_val;
+    passesController.ao_radius.enabled                 = new_val;
+    passesController.ao_falloff.enabled                = new_val;
     )
   else(
-    passesController.ao_occluded_color.enabled = false;
-    passesController.ao_occluded_color_label.enabled = false;
-    passesController.ao_unoccluded_color.enabled = false;
+    passesController.ao_occluded_color.enabled         = false;
+    passesController.ao_occluded_color_label.enabled   = false;
+    passesController.ao_unoccluded_color.enabled       = false;
     passesController.ao_unoccluded_color_label.enabled = false;
-    passesController.ao_radius.enabled = false;
-    passesController.ao_falloff.enabled = false;
+    passesController.ao_radius.enabled                 = false;
+    passesController.ao_falloff.enabled                = false;
     )
 
   passesController.caustics.enabled = new_val;
@@ -288,43 +291,43 @@ fn manageUi new_val = (
     passesController.caustics_search_dist.enabled = new_val;
     passesController.caustics_max_photons.enabled = new_val;
     passesController.caustics_max_density.enabled = new_val;
-    passesController.search_dist_label.enabled = new_val;
-    passesController.max_photons_label.enabled = new_val;
-    passesController.max_density_label.enabled = new_val;
+    passesController.search_dist_label.enabled    = new_val;
+    passesController.max_photons_label.enabled    = new_val;
+    passesController.max_density_label.enabled    = new_val;
     )
   else (
     passesController.caustics_search_dist.enabled = false;
     passesController.caustics_max_photons.enabled = false;
     passesController.caustics_max_density.enabled = false;
-    passesController.search_dist_label.enabled = false;
-    passesController.max_photons_label.enabled = false;
-    passesController.max_density_label.enabled = false;
+    passesController.search_dist_label.enabled    = false;
+    passesController.max_photons_label.enabled    = false;
+    passesController.max_density_label.enabled    = false;
     )
 
-  passesController.image_sampler.enabled = new_val;
-  passesController.advanced_image_sampler.enabled = new_val;
+  passesController.image_sampler.enabled            = new_val;
+  passesController.advanced_image_sampler.enabled   = new_val;
 
-  passesController.time_output.enabled = new_val;
-  passesController.range_start.enabled = new_val;
-  passesController.range_end.enabled = new_val;
-  passesController.size_output_width.enabled = new_val;
-  passesController.size_output_height.enabled = new_val;
-  passesController.range_start_label.enabled = new_val;
-  passesController.range_end_label.enabled = new_val;
-  passesController.size_output_width_label.enabled = new_val;
+  passesController.time_output.enabled              = new_val;
+  passesController.range_start.enabled              = new_val;
+  passesController.range_end.enabled                = new_val;
+  passesController.size_output_width.enabled        = new_val;
+  passesController.size_output_height.enabled       = new_val;
+  passesController.range_start_label.enabled        = new_val;
+  passesController.range_end_label.enabled          = new_val;
+  passesController.size_output_width_label.enabled  = new_val;
   passesController.size_output_height_label.enabled = new_val;
 
-  passesController.Z.enabled = new_val;
+  passesController.Z.enabled                        = new_val;
   if passesController.Z.checked
   then (
-    passesController.z_min.enabled = new_val;
-    passesController.z_max.enabled = new_val;
+    passesController.z_min.enabled       = new_val;
+    passesController.z_max.enabled       = new_val;
     passesController.z_min_label.enabled = new_val;
     passesController.z_max_label.enabled = new_val;
     )
   else(
-    passesController.z_min.enabled = false;
-    passesController.z_max.enabled = false;
+    passesController.z_min.enabled       = false;
+    passesController.z_max.enabled       = false;
     passesController.z_min_label.enabled = false;
     passesController.z_max_label.enabled = false;
     )
@@ -332,71 +335,72 @@ fn manageUi new_val = (
   passesController.velocity.enabled = new_val;
   if passesController.velocity.checked
   then (
-    passesController.max_velocity.enabled = new_val;
-    passesController.ignore_z.enabled = new_val;
+    passesController.max_velocity.enabled       = new_val;
+    passesController.ignore_z.enabled           = new_val;
     passesController.max_velocity_label.enabled = new_val;
-    passesController.ignore_z_label.enabled = new_val;
+    passesController.ignore_z_label.enabled     = new_val;
     )
   else(
-    passesController.max_velocity.enabled = false;
-    passesController.ignore_z.enabled = false;
+    passesController.max_velocity.enabled       = false;
+    passesController.ignore_z.enabled           = false;
     passesController.max_velocity_label.enabled = false;
-    passesController.ignore_z_label.enabled = false;
+    passesController.ignore_z_label.enabled     = false;
     )
 
-  passesController.add_light_select.enabled = new_val;
-  passesController.liste_light_select.enabled = new_val;
+  passesController.add_light_select.enabled          = new_val;
+  passesController.delete_light_select.enabled       = new_val;
+  passesController.liste_light_select.enabled        = new_val;
 
-  passesController.pick_matte_objects.enabled = new_val;
-  passesController.liste_matte_objects.enabled = new_val;
+  passesController.pick_matte_objects.enabled        = new_val;
+  passesController.liste_matte_objects.enabled       = new_val;
 
-  passesController.set_camera.enabled = new_val;
-  passesController.set_path.enabled = new_val;
-  passesController.render_all.enabled = new_val;
+  passesController.set_camera.enabled                = new_val;
+  passesController.set_path.enabled                  = new_val;
+  passesController.render_all.enabled                = new_val;
 
-  passesController.MultiMatteElement.enabled = new_val;
-  passesController.VRayAlph.enabled = new_val;
-  passesController.VRayAtmosphere.enabled = new_val;
-  passesController.VRayBackground.enabled = new_val;
-  passesController.VRayCaustics.enabled = new_val;
-  passesController.VRayDiffuseFilter.enabled = new_val;
-  passesController.VRayGlobalIllumination.enabled = new_val;
-  passesController.VRayLighting.enabled = new_val;
-  passesController.VRayMatteShadow.enabled = new_val;
-  passesController.VRayMtlID.enabled = new_val;
-  passesController.VRayMtlSelect.enabled = new_val;
-  passesController.VRayNormals.enabled = new_val;
-  passesController.VRayObjectID.enabled = new_val;
+  passesController.MultiMatteElement.enabled         = new_val;
+  passesController.VRayAlph.enabled                  = new_val;
+  passesController.VRayAtmosphere.enabled            = new_val;
+  passesController.VRayBackground.enabled            = new_val;
+  passesController.VRayCaustics.enabled              = new_val;
+  passesController.VRayDiffuseFilter.enabled         = new_val;
+  passesController.VRayGlobalIllumination.enabled    = new_val;
+  passesController.VRayLighting.enabled              = new_val;
+  passesController.VRayMatteShadow.enabled           = new_val;
+  passesController.VRayMtlID.enabled                 = new_val;
+  passesController.VRayMtlSelect.enabled             = new_val;
+  passesController.VRayNormals.enabled               = new_val;
+  passesController.VRayObjectID.enabled              = new_val;
   passesController.VRayRawGlobalIllumination.enabled = new_val;
-  passesController.VRayRawLighting.enabled = new_val;
-  passesController.VRayRawReflection.enabled = new_val;
-  passesController.VRayRawRefraction.enabled = new_val;
-  passesController.VRayRawShadow.enabled = new_val;
-  passesController.VRayRawTotalLighting.enabled = new_val;
-  passesController.VRayReflectionFilter.enabled = new_val;
-  passesController.VRayReflection.enabled = new_val;
-  passesController.VRayRefractionFilter.enabled = new_val;
-  passesController.VRayRefraction.enabled = new_val;
-  passesController.VRayRenderID.enabled = new_val;
-  passesController.VRaySelfIllumination.enabled = new_val;
-  passesController.VRayShadows.enabled = new_val;
-  passesController.VRaySpecular.enabled = new_val;
-  passesController.VRayTotalLighting.enabled = new_val;
-  passesController.VRayUnclampedColor.enabled = new_val;
-  passesController.VRayWireColor.enabled = new_val;
+  passesController.VRayRawLighting.enabled           = new_val;
+  passesController.VRayRawReflection.enabled         = new_val;
+  passesController.VRayRawRefraction.enabled         = new_val;
+  passesController.VRayRawShadow.enabled             = new_val;
+  passesController.VRayRawTotalLighting.enabled      = new_val;
+  passesController.VRayReflectionFilter.enabled      = new_val;
+  passesController.VRayReflection.enabled            = new_val;
+  passesController.VRayRefractionFilter.enabled      = new_val;
+  passesController.VRayRefraction.enabled            = new_val;
+  passesController.VRayRenderID.enabled              = new_val;
+  passesController.VRaySelfIllumination.enabled      = new_val;
+  passesController.VRayShadows.enabled               = new_val;
+  passesController.VRaySpecular.enabled              = new_val;
+  passesController.VRayTotalLighting.enabled         = new_val;
+  passesController.VRayUnclampedColor.enabled        = new_val;
+  passesController.VRayWireColor.enabled             = new_val;
 
   if passesController.time_output.selected == 3
   then (
-    passesController.range_start.enabled = true;
-    passesController.range_end.enabled = true;
+    passesController.range_start.enabled       = true;
+    passesController.range_end.enabled         = true;
     passesController.range_start_label.enabled = true;
-    passesController.range_end_label.enabled = true;
+    passesController.range_end_label.enabled   = true;
     )
   else(
-    passesController.range_start.enabled = false;
-    passesController.range_end.enabled = false;
+    passesController.range_start.enabled       = false;
+    passesController.range_end.enabled         = false;
     passesController.range_start_label.enabled = false;
-    passesController.range_end_label.enabled = false;
+    passesController.range_end_label.enabled   = false;
     )
 
   if passesController.primary_engine.selection == 1 and passesController.primary_engine.enabled
@@ -404,5 +408,5 @@ fn manageUi new_val = (
   else ( passesController.primary_engine_preset.enabled = false; )
 
   passesController.advanced_gi.enabled = passesController.GI.checked;
-  passesController.render_all.enabled = general_ctrl.directory_set and general_ctrl.camera_set;
+  passesController.render_all.enabled  = general_ctrl.directory_set and general_ctrl.camera_set;
   );

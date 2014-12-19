@@ -30,16 +30,22 @@ fn getLayers = (
 
 fn generatePasse = (
   getLayers();
-  --generate AO state
-  stateSet = masterState.AddState();
-  masterState.AssignUniqueName stateSet "AO";
-  ao = State name: "AO" state: stateSet;
-  ao.createRenderElement();
-  append states ao;
   --generate backup state
   stateSet = masterState.AddState();
   masterState.AssignUniqueName stateSet "Backup";
   backup = State name: stateSet.Name state: stateSet;
+  --generate AO state
+  stateSet = masterState.AddState();
+  masterState.AssignUniqueName stateSet "AO";
+  ao = State name: "AO" state: stateSet;
+  masterState.CurrentState = #(ao.state);
+  ao.state.BeginRecording();
+  for obj in Geometry do(
+    if not isKindOf obj TargetObject
+    then obj.material = general_ctrl.ao_element;
+    )
+  ao.state.EndRecording();
+  masterState.RemoveChild ao.state;
 
   for i = 1 to layers.count do (
     stateSet = masterState.AddState();

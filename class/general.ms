@@ -26,7 +26,7 @@ struct GeneralCtrl(
     size_output_width  = renderWidth;
     size_output_height = renderHeight;
     dirt = VRayDirt();
-    ao_element = VRayExtraTex elementname: "AO" texture: dirt;
+    ao_element = VRayMtl name: "AO" texmap_diffuse: dirt texmap_diffuse_on: true;
     ao_state = false;
     updateSettings();
     ),
@@ -69,10 +69,10 @@ fn updateAOUI                 = (
   passesController.AO.checked = ao_state;
   if passesController.AO.checked
   then (
-    passesController.ao_occluded_color.color = ao_element.texture.occluded_color;
-    passesController.ao_unoccluded_color.color = ao_element.texture.unoccluded_color;
-    passesController.ao_radius.value = ao_element.texture.radius;
-    passesController.ao_falloff.value = ao_element.texture.falloff;
+    passesController.ao_occluded_color.color = ao_element.texmap_diffuse.occluded_color;
+    passesController.ao_unoccluded_color.color = ao_element.texmap_diffuse.unoccluded_color;
+    passesController.ao_radius.value = ao_element.texmap_diffuse.radius;
+    passesController.ao_falloff.value = ao_element.texmap_diffuse.falloff;
     )
   else (
     passesController.ao_occluded_color.color = color 0 0 0;
@@ -81,19 +81,16 @@ fn updateAOUI                 = (
     passesController.ao_falloff.value = 0.0;
     )
   ),
-fn updateOccludedColor new_val   = ( ao_element.texture.occluded_color = new_val; ),
-fn updateUnoccludedColor new_val = ( ao_element.texture.unoccluded_color = new_val; ),
-fn updateRadius new_val          = ( ao_element.texture.radius = new_val; ),
-fn updateFalloff new_val         = ( ao_element.texture.falloff = new_val; ),
+fn updateOccludedColor new_val   = ( ao_element.texmap_diffuse.occluded_color = new_val; ),
+fn updateUnoccludedColor new_val = ( ao_element.texmap_diffuse.unoccluded_color = new_val; ),
+fn updateRadius new_val          = ( ao_element.texmap_diffuse.radius = new_val; ),
+fn updateFalloff new_val         = ( ao_element.texmap_diffuse.falloff = new_val; ),
 fn updateAO new_val              = (
-  masterState.CurrentState = #(ao.state);
-  ao.state.BeginRecording();
-  ao.updateRenderElement();
+  masterState.CurrentState = #(backup.state);
   if new_val
-  then re.AddRenderElement ao_element;
-  else re.RemoveRenderElement ao_element;
+  then ( masterState.AddChild ao.state false; append states ao; )
+  else ( masterState.RemoveChild ao.state; i = findItem states ao; deleteItem states i;)
   ao_state = new_val;
-  ao.state.EndRecording();
   masterState.CurrentState = #(current_state.state);
   ),
 -- get camera
@@ -116,9 +113,8 @@ fn getSaveDir = (
     )
   ),
 fn saveAllPasses = (
-  for i = 1 to states.count do ( makeDir (save_dir as string + "\\" + states[i].name as string) all:true; );
-
   for i = 1 to states.count do (
+    makeDir (save_dir as string + "\\" + states[i].name as string) all:true;
     current_state            = states[i];
     masterState.CurrentState = #(current_state.state);
 
@@ -128,7 +124,7 @@ fn saveAllPasses = (
     current_state.state.EndRecording();
 
     selectPasse states[i].name;
-    states[i].state.Render #(states[i].state) camera:save_camera;
+    states[i].state.Render #(states[i].state) camera:save_camera #noPrompt;
     )
   );
 );

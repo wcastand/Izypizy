@@ -10,7 +10,7 @@ fn createMatteMaterial = (
   );
 
 fn setMatteShadow n = (
-        n.material = matte_shadow;
+  n.material = matte_shadow;
   );
 
 fn setHidden layerIndex = (
@@ -29,16 +29,13 @@ fn selectPasse name = (
   for i = 1 to states.count do (
     if states[i].name == name
     then (
-      if name == "AO"
-      then general_ctrl.updateAO true;
-      else (
-        current_state = states[i];
-        masterState.CurrentState = #(current_state.state);
-        current_state.updateUI();
-        current_state.updateRenderElement();
-        current_state.updateMatteList();
-        current_state.state.BeginRecording();
-        )
+      current_state = states[i];
+      masterState.CurrentState = #(current_state.state);
+      current_state.updateUI();
+      current_state.updateRenderElement();
+      current_state.updateLightSelectPasse();
+      current_state.updateMatteList();
+      current_state.state.BeginRecording();
       )
     );
   general_ctrl.applyToAllState "all";

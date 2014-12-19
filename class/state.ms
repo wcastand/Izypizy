@@ -16,6 +16,8 @@ struct State(
   image_sampler = vr.imageSampler_type,
   -- Matte Shadow elements
   matte_shadow = #(),
+  -- Light Select elements
+  light_select = #(),
   --channel array
   render_element_state = #(
     false, --MultiMatteElement
@@ -49,7 +51,7 @@ struct State(
     false, --VRayRawReflection
     false, --VRayWireColor
     false, --VRayVelocity
-    false --VRayZDepth
+    false  --VRayZDepth
     ),
   render_element = #(
     MultiMatteElement,
@@ -85,19 +87,53 @@ struct State(
     VRayVelocity,
     VRayZDepth
     ),
-  light_select = #(),
   --Light Select
   fn filterLight obj                     = ( isKindOf obj Light; ),
   fn addLightSelectPasse                 = (
     temp_render = VRayLightSelect elementname:("light_select_" + light_select.count as string);
     lights = selectByName title:"Select Lights" buttonText:"Add" filter:filterLight showHidden:true single:false;
-    temp_render.lights = lights;
-    re.AddRenderElement temp_render;
-    append light_select temp_render;
-    LightList.items = append LightList.items temp_render.elementname;
+    if lights != undefined then (
+      temp_render.lights = lights;
+      re.AddRenderElement temp_render;
+      append light_select temp_render;
+      LightList.items = append LightList.items temp_render.elementname;
+      )
+    ),
+  fn deleteLightSelectPasse              = (
+    index = LightList.selection;
+    for i = 1 to light_select.count do ( if LightList.selected == light_select[i].elementname then (
+      re.RemoveRenderElement light_select[i];
+      deleteItem light_select i;
+      )
+    )
+    temp = LightList.items;
+    deleteItem temp index;
+    LightList.items = temp;
+    ),
+  fn renameLightElement item             = (
+    renamer = dotNetObject "MaxCustomControls.RenameInstanceDialog" LightList.items[item]
+    DialogResult = renamer.Showmodal();
+    if dotnet.compareenums renamer.DialogResult ((dotnetclass "System.Windows.Forms.DialogResult").OK)
+    then (
+      new_name = renamer.InstanceName;
+      for n in light_select do ( if n.elementname == LightList.items[item] then n.elementname = new_name; )
+      --delete old name
+      temp = LightList.items;
+      deleteItem temp item;
+      LightList.items = temp;
+      --add new one
+      LightList.items = append LightList.items new_name;
+      );
+    ),
+  fn updateLightSelectPasse              = (
+    LightList.items = #();
+    for n in light_select do (
+      re.AddRenderElement n;
+      LightList.items = append LightList.items n.elementname;
+      )
     ),
   --Matte Object
-  fn filterMatte obj                     = ( 
+  fn filterMatte obj                     = (
     local theNodes = undefined;
     local return_value = true;
     layer.nodes &theNodes;
