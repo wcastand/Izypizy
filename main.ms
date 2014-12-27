@@ -6,6 +6,8 @@ fileIn "class/state.ms";
 fileIn "class/ui.ms";
 
 fn init = (
+  dialogMonitorOps.unRegisterNotification id:#no_save;
+  dialogMonitorOps.enabled = false;
   renderers.current = VRay();
   vr = renderers.current;
   matte_shadow = createMatteMaterial();
@@ -42,6 +44,7 @@ fn generatePasse = (
   ao.state.BeginRecording();
   for obj in Geometry do(
     if not isKindOf obj TargetObject
+
     then obj.material = general_ctrl.ao_element;
     )
   ao.state.EndRecording();
@@ -54,6 +57,7 @@ fn generatePasse = (
     istate.createRenderElement();
     append states istate;
     masterState.CurrentState = #(stateSet);
+
     istate.state.BeginRecording();
     setHidden i;
     istate.state.EndRecording();

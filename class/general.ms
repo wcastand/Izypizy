@@ -125,7 +125,12 @@ fn saveAllPasses = (
     current_state.state.EndRecording();
 
     selectPasse states[i].name;
+    initEventDialog();
+
     states[i].state.Render #(states[i].state) camera:save_camera quiet:true missingExtFilesAction:#logmsg unsupportedRenderEffectAction:#logmsg;
+
+    dialogMonitorOps.unRegisterNotification id:#no_save;
+    dialogMonitorOps.enabled = false;
     )
   );
 );

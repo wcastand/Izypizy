@@ -41,3 +41,16 @@ fn selectPasse name = (
   general_ctrl.applyToAllState "all";
   manageUI true;
   );
+
+fn initEventDialog = (
+  dialogMonitorOps.enabled = true;
+  dialogMonitorOps.interactive = false;
+  dialogMonitorOps.registerNotification confirmNoSave id:#no_save;
+  );
+
+fn confirmNoSave = (
+  hwnd = dialogMonitorOps.getWindowHandle();
+  success = UIAccessor.GetWindowText hwnd == "Warning: No files saved";
+  if success do UIAccessor.PressDefaultButton();
+  return success;
+  );
